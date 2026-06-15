@@ -1,18 +1,4 @@
-import { db } from "./firebase-config.js";
-
-import {
-    doc,
-    setDoc
-}
-from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-await setDoc(
-    doc(db, "test", "hello"),
-    {
-        message: "firebase works"
-    }
-);
+console.log("app loaded");
 
 const roommates = [
     "Izzy Tak",
