@@ -125,7 +125,7 @@ savePasswordBtn.addEventListener("click", async () => {
     });
 
     setPasswordMsg.style.color = "green";
-    setPasswordMsg.textContent = "Password saved! You can now log in.";
+    setPasswordMsg.textContent = "Password saved! You can now log in :)";
 
     // Clear inputs
     newPasswordInput.value = "";
@@ -221,26 +221,6 @@ const owedList =
 
 const currentBills =
     document.getElementById("current-bills");
-
-    /*
-document
-    .querySelectorAll("[data-user]")
-    .forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            currentUser =
-                button.dataset.user;
-
-            localStorage.setItem(
-                "currentUser",
-                currentUser
-            );
-
-            loadDashboard();
-        });
-    });
-    */
 
 document
     .getElementById("change-user")

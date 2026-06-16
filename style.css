@@ -1,6 +1,250 @@
-body{font-family:Arial,sans-serif;background:#f5f5f5}
-.container{max-width:900px;margin:auto;padding:20px}
-.card{background:white;padding:15px;border-radius:10px;margin:10px 0}
-button{padding:8px 12px;cursor:pointer}
-input,select{padding:8px;margin:4px}
-.person{border-top:1px solid #ddd;padding-top:10px;margin-top:10px}
+/* Google Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(
+        135deg,
+        #f6f0ff,
+        #ece0ff
+    );
+
+    margin: 0;
+    padding: 20px;
+    color: #4a2f66;
+}
+
+#app {
+    max-width: 900px;
+    margin: auto;
+}
+
+/* Main Cards */
+
+.card,
+section {
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 20px;
+
+    margin-bottom: 20px;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Headings */
+
+h1 {
+    color: #6d3fd1;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+h2 {
+    color: #7b4ce2;
+    margin-bottom: 15px;
+}
+
+h3 {
+    color: #8c63e8;
+}
+
+/* Dashboard Header */
+
+.header {
+    text-align: center;
+}
+
+#welcome {
+    margin-bottom: 5px;
+}
+
+#displayMonth {
+    color: #8d72cf;
+    font-weight: 500;
+}
+
+/* Buttons */
+
+button {
+    background: #8b5cf6;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 12px;
+
+    padding: 10px 16px;
+
+    font-family: inherit;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #7347da;
+
+    transform: translateY(-2px);
+}
+
+/* User Selection Buttons */
+
+#user-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+}
+
+#user-buttons button {
+    min-width: 150px;
+}
+
+/* Inputs */
+
+input,
+select {
+    width: 100%;
+
+    padding: 12px;
+
+    border: 2px solid #d8c7ff;
+
+    border-radius: 12px;
+
+    margin-top: 6px;
+    margin-bottom: 12px;
+
+    font-family: inherit;
+    font-size: 14px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+
+    border-color: #8b5cf6;
+}
+
+/* Bill Cards */
+
+.bill-card {
+    background: #f8f4ff;
+
+    border-left: 6px solid #8b5cf6;
+
+    padding: 12px;
+
+    border-radius: 12px;
+
+    margin-bottom: 10px;
+}
+
+.bill-card strong {
+    color: #6d3fd1;
+    font-size: 16px;
+}
+
+/* Managed Bill Section */
+
+#managed-bill {
+    background: #f4edff;
+    border: 2px solid #d8c7ff;
+}
+
+/* What You Owe */
+
+#owed-list .bill-card {
+    border-left-color: #c084fc;
+}
+
+/* Current Bills */
+
+#current-bills .bill-card {
+    border-left-color: #7c3aed;
+}
+
+/* Login Screen */
+
+#login-screen {
+    text-align: center;
+}
+
+#login-screen h1 {
+    font-size: 2.4rem;
+}
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 12px;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    #user-buttons {
+        flex-direction: column;
+    }
+}
+
+
+
+
+
+/* Colour codes for utilities*/
+
+/* ==========================
+   Utility Colour Themes
+   ========================== */
+
+/* Gas */
+
+.gas-card {
+    background: #fff0f3;
+
+    border-left: 6px solid #ff5f7a;
+}
+
+.gas-card strong {
+    color: #d6336c;
+}
+
+/* WiFi */
+
+.wifi-card {
+    background: #eef7ff;
+
+    border-left: 6px solid #4dabf7;
+}
+
+.wifi-card strong {
+    color: #1971c2;
+}
+
+/* Hydro */
+
+.hydro-card {
+    background: #e2c6b2;
+
+    border-left: 6px solid #e28b4d;
+}
+
+.hydro-card strong {
+    color: #CC5500;
+}
