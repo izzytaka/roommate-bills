@@ -40,8 +40,13 @@ loginForm.addEventListener("submit", async (e) => {
         return;
     }
 
+    // ===============================================
+    // Fetch user data from Firestore //
+    // ===============================================
     const userDocRef = doc(db, "users", selectedUser);
     const userSnap = await getDoc(userDocRef);
+    // ===============================================
+    // ===============================================
 
     if (!userSnap.exists()) {
         loginError.textContent = "No password set. Please set one first.";
@@ -120,9 +125,12 @@ savePasswordBtn.addEventListener("click", async () => {
 
     const hash = await hashPassword(newPassword);
 
+    // ===============================================
+    // Save to Firestore //
     await setDoc(doc(db, "users", selectedUser), {
         passwordHash: hash
     });
+    // ===============================================
 
     setPasswordMsg.style.color = "green";
     setPasswordMsg.textContent = "Password saved! You can now log in :)";
@@ -143,15 +151,20 @@ const roommates = [
 
 const billOwners = {
     Gas: "Izzy Tak",
-    WiFi: "Milla",
-    Hydro: "Caliee"
+    Hydro: "Caliee",
+    Water: "Milla"
 };
 
-let bills =
-    JSON.parse(localStorage.getItem("bills")) || {
-        Gas: 0,
-        WiFi: 0,
-        Hydro: 0
+const defaultMonthData = {
+    Gas: 0,
+    Hydro: 0,
+    Water: 0,
+    archived: false
+};
+
+let currentMonthData =
+    JSON.parse(localStorage.getItem("currentMonthData")) || {
+        ...defaultMonthData
     };
 
 let currentUser =
@@ -166,18 +179,18 @@ const displayMonth =
     document.getElementById('displayMonth');
 
 const monthlyData = {
-  may26: { title: "May 2026"},
-  jun26: { title: "June 2026"},
-  jul26: { title: "July 2026"},
-  aug26: { title: "August 2026"},
-  sep26: { title: "September 2026"},
-  oct26: { title: "October 2026"},
-  nov26: { title: "November 2026"},
-  dec26: { title: "December 2026"},
-  jan27: { title: "January 2027"},
-  feb27: { title: "February 2027"},
-  mar27: { title: "March 2027"},
-  apr27: { title: "April 2027"}
+  may2026: { title: "May 2026"},
+  jun2026: { title: "June 2026"},
+  jul2026: { title: "July 2026"},
+  aug2026: { title: "August 2026"},
+  sep2026: { title: "September 2026"},
+  oct2026: { title: "October 2026"},
+  nov2026: { title: "November 2026"},
+  dec2026: { title: "December 2026"},
+  jan2027: { title: "January 2027"},
+  feb2027: { title: "February 2027"},
+  mar2027: { title: "March 2027"},
+  apr2027: { title: "April 2027"}
 };
 
 function updatePageData(monthKey) {
@@ -233,14 +246,6 @@ document
         location.reload();
     });
 
-function saveBills() {
-
-    localStorage.setItem(
-        "bills",
-        JSON.stringify(bills)
-    );
-}
-
 async function loadDashboard() {
 
     loginScreen.style.display = "none";
@@ -250,25 +255,25 @@ async function loadDashboard() {
     welcome.textContent =
         `Welcome ${currentUser}`;
 
-    displayMonth.textContent = 
-    `${monthlyData[monthSelect.value].title}`;
-
-    renderManagedBill();
-
-    renderOwedBills();
-
-    renderCurrentBills();
-
+    updatePageData(monthSelect.value);
     await loadMonthData();
 }
 
 function renderManagedBill() {
-
     managedBill.innerHTML = "";
+
+    if (currentMonthData.archived) {
+        managedBill.innerHTML = `
+            <div class="archived-banner">
+                <strong>This month is archived.</strong>
+                <p>No bill edits are allowed until a new month is selected.</p>
+            </div>
+        `;
+        return;
+    }
 
     Object.entries(billOwners)
         .forEach(([bill, owner]) => {
-
             if (owner !== currentUser)
                 return;
 
@@ -277,8 +282,10 @@ function renderManagedBill() {
 
                 <input
                     type="number"
+                    step="0.01"
+                    min="0"
                     id="${bill}-input"
-                    value="${bills[bill]}">
+                    value="${currentMonthData[bill] ?? 0}">
 
                 <button
                     onclick="updateBill('${bill}')">
@@ -289,38 +296,33 @@ function renderManagedBill() {
 }
 
 function renderOwedBills() {
-
     owedList.innerHTML = "";
+
+    if (currentMonthData.archived) {
+        owedList.innerHTML = `
+            <div class="bill-card archived-card">
+                <strong>Archived</strong>
+                <p>All bills for this month are complete.</p>
+            </div>
+        `;
+        return;
+    }
 
     Object.entries(billOwners)
         .forEach(([bill, owner]) => {
-
-            const amount =
-                Number(bills[bill]);
+            const amount = Number(currentMonthData[bill] ?? 0);
 
             if (amount <= 0)
                 return;
 
-            const share =
-                amount / 5;
-
-            const utilityClass =
-                bill.toLowerCase() + "-card";
-
-
+            const share = amount / roommates.length;
 
             owedList.innerHTML += `
                 <div class="bill-card">
-
                     <strong>${bill}</strong>
-
                     <p>
-                        Owe
-                        $${share.toFixed(2)}
-                        to
-                        ${owner}
+                        Owe $${share.toFixed(2)} to ${owner}
                     </p>
-
                 </div>
             `;
         });
@@ -330,8 +332,10 @@ function renderCurrentBills() {
 
     currentBills.innerHTML = "";
 
-    Object.entries(bills)
+    Object.entries(currentMonthData)
         .forEach(([bill, amount]) => {
+            if (bill === "archived")
+                return;
 
             currentBills.innerHTML += `
                 <div class="bill-card ${bill.toLowerCase()}-card">
@@ -346,6 +350,22 @@ function renderCurrentBills() {
                 </div>
             `;
         });
+
+    if (currentMonthData.archived) {
+        currentBills.innerHTML += `
+            <div class="bill-card archived-card">
+                <strong>Archived</strong>
+                <p>This month has been archived.</p>
+            </div>
+        `;
+    }
+}
+
+async function saveMonthData() {
+    const month = monthSelect.value;
+
+    await setDoc(doc(db, "months", month), currentMonthData);
+    localStorage.setItem("currentMonthData", JSON.stringify(currentMonthData));
 }
 
 async function updateBill(type) {
@@ -356,43 +376,25 @@ async function updateBill(type) {
         ).value
     );
 
-    bills[type] = value;
-
-    saveBills();
-
-    const month =
-        monthSelect.value;
-
-    await setDoc(
-        doc(
-            db,
-            "months",
-            month
-        ),
-        {
-            Gas: bills.Gas,
-            WiFi: bills.WiFi,
-            Hydro: bills.Hydro
-        }
+    currentMonthData[type] = Number.isFinite(value) ? value : 0;
+    currentMonthData.archived = ["Gas", "Hydro", "Water"].every(
+        (bill) => Number(currentMonthData[bill]) > 0
     );
 
-    renderOwedBills();
+    await saveMonthData();
 
+    renderManagedBill();
+    renderOwedBills();
     renderCurrentBills();
 
-    console.log(
-        "Saved to Firebase"
-    );
+    console.log("Saved to Firebase", monthSelect.value, currentMonthData);
 }
 
+window.updateBill = updateBill;
 
-//window.updateBill = updateBill;
-
-//if (currentUser) {
-
-//    loadDashboard();
-
-//}
+if (currentUser) {
+    loadDashboard();
+}
 
 async function loadMonthData() {
 
@@ -410,14 +412,15 @@ async function loadMonthData() {
 
     if (snap.exists()) {
 
-        bills = snap.data();
+        currentMonthData = {
+            ...defaultMonthData,
+            ...snap.data()
+        };
 
     } else {
 
-        bills = {
-            Gas: 0,
-            WiFi: 0,
-            Hydro: 0
+        currentMonthData = {
+            ...defaultMonthData
         };
     }
 
