@@ -1,5 +1,14 @@
 console.log("app loaded");
 
+import { db } from "./firebase-config.js";
+
+import {
+  doc,
+  setDoc,
+  getDoc
+}
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+
 const roommates = [
     "Izzy Tak",
     "Milla",
@@ -55,9 +64,18 @@ function updatePageData(monthKey) {
   }
 }
 
-monthSelect.addEventListener('change', (event) => {
-  const selectedMonth = event.target.value;
-  updatePageData(selectedMonth);
+monthSelect.addEventListener(
+  'change',
+  async (event) => {
+
+    const selectedMonth =
+      event.target.value;
+
+    updatePageData(
+      selectedMonth
+    );
+
+    await loadMonthData();
 });
 
 // end of monthly data stuff
@@ -117,7 +135,7 @@ function saveBills() {
     );
 }
 
-function loadDashboard() {
+async function loadDashboard() {
 
     loginScreen.style.display = "none";
 
@@ -134,6 +152,8 @@ function loadDashboard() {
     renderOwedBills();
 
     renderCurrentBills();
+
+    await loadMonthData();
 }
 
 function renderManagedBill() {
@@ -217,28 +237,81 @@ function renderCurrentBills() {
         });
 }
 
-function updateBill(type) {
+async function updateBill(type) {
 
-    const value =
-        parseFloat(
-            document.getElementById(
-                `${type}-input`
-            ).value
-        );
+    const value = parseFloat(
+        document.getElementById(
+            `${type}-input`
+        ).value
+    );
 
     bills[type] = value;
 
     saveBills();
 
+    const month =
+        monthSelect.value;
+
+    await setDoc(
+        doc(
+            db,
+            "months",
+            month
+        ),
+        {
+            Gas: bills.Gas,
+            WiFi: bills.WiFi,
+            Hydro: bills.Hydro
+        }
+    );
+
     renderOwedBills();
 
     renderCurrentBills();
+
+    console.log(
+        "Saved to Firebase"
+    );
 }
 
-window.updateBill = updateBill;
 
-if (currentUser) {
+//window.updateBill = updateBill;
 
-    loadDashboard();
+//if (currentUser) {
 
+//    loadDashboard();
+
+//}
+
+async function loadMonthData() {
+
+    const month =
+        monthSelect.value;
+
+    const snap =
+        await getDoc(
+            doc(
+                db,
+                "months",
+                month
+            )
+        );
+
+    if (snap.exists()) {
+
+        bills = snap.data();
+
+    } else {
+
+        bills = {
+            Gas: 0,
+            WiFi: 0,
+            Hydro: 0
+        };
+    }
+
+    renderManagedBill();
+    renderOwedBills();
+    renderCurrentBills();
 }
+
