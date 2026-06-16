@@ -304,6 +304,11 @@ function renderOwedBills() {
             const share =
                 amount / 5;
 
+            const utilityClass =
+                bill.toLowerCase() + "-card";
+
+
+
             owedList.innerHTML += `
                 <div class="bill-card">
 
@@ -329,7 +334,7 @@ function renderCurrentBills() {
         .forEach(([bill, amount]) => {
 
             currentBills.innerHTML += `
-                <div class="bill-card">
+                <div class="bill-card ${bill.toLowerCase()}-card">
 
                     <strong>${bill}</strong>
 

@@ -7,11 +7,13 @@
 
 body {
     font-family: 'Poppins', sans-serif;
+    /*
     background: linear-gradient(
         135deg,
         #f6f0ff,
         #ece0ff
     );
+    */
 
     margin: 0;
     padding: 20px;
@@ -94,7 +96,7 @@ button {
 }
 
 button:hover {
-    background: #7347da;
+    background: #5117d8;
 
     transform: translateY(-2px);
 }
@@ -141,7 +143,7 @@ select:focus {
 /* Bill Cards */
 
 .bill-card {
-    background: #f8f4ff;
+    /*background: #f8f4ff;*/
 
     border-left: 6px solid #8b5cf6;
 
@@ -160,7 +162,7 @@ select:focus {
 /* Managed Bill Section */
 
 #managed-bill {
-    background: #f4edff;
+    /*background: #f4edff;*/
     border: 2px solid #d8c7ff;
 }
 
