@@ -126,6 +126,9 @@ function loadDashboard() {
     welcome.textContent =
         `Welcome ${currentUser}`;
 
+    displayMonth.textContent = 
+    `${monthlyData[monthSelect.value].title}`;
+
     renderManagedBill();
 
     renderOwedBills();
