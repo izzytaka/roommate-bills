@@ -24,6 +24,44 @@ let bills =
 let currentUser =
     localStorage.getItem("currentUser");
 
+
+// All monthly data stuff
+const monthSelect = 
+    document.getElementById('monthSelect');
+
+const displayMonth = 
+    document.getElementById('displayMonth');
+
+const monthlyData = {
+  may26: { title: "May 2026"},
+  jun26: { title: "June 2026"},
+  jul26: { title: "July 2026"},
+  aug26: { title: "August 2026"},
+  sep26: { title: "September 2026"},
+  oct26: { title: "October 2026"},
+  nov26: { title: "November 2026"},
+  dec26: { title: "December 2026"},
+  jan27: { title: "January 2027"},
+  feb27: { title: "February 2027"},
+  mar27: { title: "March 2027"},
+  apr27: { title: "April 2027"}
+};
+
+function updatePageData(monthKey) {
+  const data = monthlyData[monthKey];
+  
+  if (data) {
+    displayMonth.textContent = data.title;
+  }
+}
+
+monthSelect.addEventListener('change', (event) => {
+  const selectedMonth = event.target.value;
+  updatePageData(selectedMonth);
+});
+
+// end of monthly data stuff
+
 const loginScreen =
     document.getElementById("login-screen");
 
