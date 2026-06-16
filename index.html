@@ -28,7 +28,7 @@
             <h1>🏠 Roommate Bills</h1>
 
             <label for="monthSelect">Select Month:</label>
-            
+
             <select id="monthSelect">
                 <option value="may2026">May-2026</option>
                 <option value="jun2026">June-2026</option>
@@ -43,19 +43,61 @@
                 <option value="mar2027">March-2027</option>
                 <option value="apr2027">April-2027</option>
             </select>
-            
 
-            <h2>Select Your Name</h2>
+            <h2>Log In</h2>
 
-            <div id="user-buttons">
-                <button data-user="Izzy Tak">Izzy Tak</button>
-                <button data-user="Milla">Milla</button>
-                <button data-user="Caliee">Caliee</button>
-                <button data-user="Vic">Vic</button>
-                <button data-user="Izzy Tate">Izzy Tate</button>
+            <form id="login-form">
+                <label for="user-select">Name:</label>
+                <select id="user-select" required>
+                    <option value="">-- Select --</option>
+                    <option value="Izzy Tak">Izzy Tak</option>
+                    <option value="Milla">Milla</option>
+                    <option value="Caliee">Caliee</option>
+                    <option value="Vic">Vic</option>
+                    <option value="Izzy Tate">Izzy Tate</option>
+                </select>
+
+                <label for="password-input">Password:</label>
+                <input type="password" id="password-input" required>
+
+                <button type="submit">Log In</button>
+
+                <p id="login-error" style="color: red;"></p>
+            </form>
+
+            <p>
+                <a href="#" id="set-password-link">Set / Reset Password</a>
+            </p>
+
+            <!-- Set / Reset Password Form (hidden by default) -->
+            <div id="set-password-section" style="display: none;">
+                <h3>Set or Reset Password</h3>
+
+                <label for="set-user-select">Name:</label>
+                <select id="set-user-select" required>
+                    <option value="">-- Select --</option>
+                    <option value="Izzy Tak">Izzy Tak</option>
+                    <option value="Milla">Milla</option>
+                    <option value="Caliee">Caliee</option>
+                    <option value="Vic">Vic</option>
+                    <option value="Izzy Tate">Izzy Tate</option>
+                </select>
+
+                <label for="new-password-input">New Password:</label>
+                <input type="password" id="new-password-input" required>
+
+                <label for="confirm-password-input">Confirm Password:</label>
+                <input type="password" id="confirm-password-input" required>
+
+                <button id="save-password-btn">Save Password</button>
+
+                <p id="set-password-msg"></p>
+
+                <p><a href="#" id="back-to-login">Back to Login</a></p>
             </div>
 
         </div>
+
 
         <!-- Dashboard -->
         <div id="dashboard" style="display:none;">

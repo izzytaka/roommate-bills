@@ -9,6 +9,130 @@ import {
 }
 from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
+// ─────────────────────────────────────────────
+// Password hashing utility (SHA-256)
+// ─────────────────────────────────────────────
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+// ─────────────────────────────────────────────
+// Login form handling
+// ─────────────────────────────────────────────
+const loginForm = document.getElementById("login-form");
+const userSelect = document.getElementById("user-select");
+const passwordInput = document.getElementById("password-input");
+const loginError = document.getElementById("login-error");
+
+loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    loginError.textContent = "";
+
+    const selectedUser = userSelect.value;
+    const password = passwordInput.value;
+
+    if (!selectedUser) {
+        loginError.textContent = "Please select a name.";
+        return;
+    }
+
+    const userDocRef = doc(db, "users", selectedUser);
+    const userSnap = await getDoc(userDocRef);
+
+    if (!userSnap.exists()) {
+        loginError.textContent = "No password set. Please set one first.";
+        return;
+    }
+
+    const storedHash = userSnap.data().passwordHash;
+    const inputHash = await hashPassword(password);
+
+    if (inputHash !== storedHash) {
+        loginError.textContent = "Incorrect password.";
+        return;
+    }
+
+    // Success
+    currentUser = selectedUser;
+    localStorage.setItem("currentUser", currentUser);
+    loadDashboard();
+});
+
+// ─────────────────────────────────────────────
+// Set / Reset password UI toggle
+// ─────────────────────────────────────────────
+const setPasswordLink = document.getElementById("set-password-link");
+const setPasswordSection = document.getElementById("set-password-section");
+const backToLogin = document.getElementById("back-to-login");
+
+setPasswordLink.addEventListener("click", (e) => {
+    e.preventDefault();
+    loginForm.style.display = "none";
+    setPasswordLink.style.display = "none";
+    setPasswordSection.style.display = "block";
+});
+
+backToLogin.addEventListener("click", (e) => {
+    e.preventDefault();
+    setPasswordSection.style.display = "none";
+    loginForm.style.display = "block";
+    setPasswordLink.style.display = "inline";
+});
+
+// ─────────────────────────────────────────────
+// Save new password
+// ─────────────────────────────────────────────
+const setUserSelect = document.getElementById("set-user-select");
+const newPasswordInput = document.getElementById("new-password-input");
+const confirmPasswordInput = document.getElementById("confirm-password-input");
+const savePasswordBtn = document.getElementById("save-password-btn");
+const setPasswordMsg = document.getElementById("set-password-msg");
+
+savePasswordBtn.addEventListener("click", async () => {
+    setPasswordMsg.textContent = "";
+    setPasswordMsg.style.color = "black";
+
+    const selectedUser = setUserSelect.value;
+    const newPassword = newPasswordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+
+    if (!selectedUser) {
+        setPasswordMsg.style.color = "red";
+        setPasswordMsg.textContent = "Please select a name.";
+        return;
+    }
+
+    if (newPassword.length < 4) {
+        setPasswordMsg.style.color = "red";
+        setPasswordMsg.textContent = "Password must be at least 4 characters.";
+        return;
+    }
+
+    if (newPassword !== confirmPassword) {
+        setPasswordMsg.style.color = "red";
+        setPasswordMsg.textContent = "Passwords do not match.";
+        return;
+    }
+
+    const hash = await hashPassword(newPassword);
+
+    await setDoc(doc(db, "users", selectedUser), {
+        passwordHash: hash
+    });
+
+    setPasswordMsg.style.color = "green";
+    setPasswordMsg.textContent = "Password saved! You can now log in.";
+
+    // Clear inputs
+    newPasswordInput.value = "";
+    confirmPasswordInput.value = "";
+});
+
+
 const roommates = [
     "Izzy Tak",
     "Milla",
@@ -98,6 +222,7 @@ const owedList =
 const currentBills =
     document.getElementById("current-bills");
 
+    /*
 document
     .querySelectorAll("[data-user]")
     .forEach(button => {
@@ -115,6 +240,7 @@ document
             loadDashboard();
         });
     });
+    */
 
 document
     .getElementById("change-user")
