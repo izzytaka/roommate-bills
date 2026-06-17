@@ -92,18 +92,23 @@
                 <label for="monthSelect">Select Month:</label>
 
                 <select id="monthSelect">
-                    <option value="may2026">May-2026</option>
-                    <option value="jun2026">June-2026</option>
-                    <option value="jul2026">July-2026</option>
-                    <option value="aug2026">August-2026</option>
-                    <option value="sep2026">September-2026</option>
-                    <option value="oct2026">October-2026</option>
-                    <option value="nov2026">November-2026</option>
-                    <option value="dec2026">December-2026</option>
-                    <option value="jan2027">January-2027</option>
-                    <option value="feb2027">February-2027</option>
-                    <option value="mar2027">March-2027</option>
-                    <option value="apr2027">April-2027</option>
+                    <optgroup label="Active months">
+                        <option value="may2026">May-2026</option>
+                        <option value="jun2026">June-2026</option>
+                        <option value="jul2026">July-2026</option>
+                        <option value="aug2026">August-2026</option>
+                        <option value="sep2026">September-2026</option>
+                        <option value="oct2026">October-2026</option>
+                        <option value="nov2026">November-2026</option>
+                        <option value="dec2026">December-2026</option>
+                        <option value="jan2027">January-2027</option>
+                        <option value="feb2027">February-2027</option>
+                        <option value="mar2027">March-2027</option>
+                        <option value="apr2027">April-2027</option>
+                    </optgroup>
+                    <optgroup label="Archive">
+                        <option value="archive">View archived months</option>
+                    </optgroup>
                 </select>
 
                 <h2 id="displayMonth">
@@ -133,6 +138,17 @@
 
             </section>
 
+            <!-- Pending Approvals -->
+            <section>
+
+                <h2>Your Pending Approvals</h2>
+
+                <div id="pending-approvals">
+
+                </div>
+
+            </section>
+
             <!-- Current Bills -->
             <section>
 
@@ -144,6 +160,14 @@
 
             </section>
 
+            </section>
+
+        </div>
+
+        <div id="archive-page" style="display:none; padding: 20px;">
+            <h2>Archived months</h2>
+            <button id="back-from-archive">Back to dashboard</button>
+            <div id="archived-month-list"></div>
         </div>
 
     </div>
